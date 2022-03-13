@@ -1,0 +1,9 @@
+{
+    "http_port": 80,
+    "db_host": "127.0.0.1",
+    "db_port": 3306,
+    "db_user": "bill",
+    "db_pass": "billbill",
+    "db_database": "bill",
+    "token": "114514noynoyacgacgacgagcgggg"
+}

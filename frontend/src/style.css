@@ -1,0 +1,10 @@
+.page ul {
+    justify-content: center;
+}
+.bt {
+    border: 0 !important;
+    flex: 1;
+}
+.bt:hover {
+    background-color: #252525 !important;
+}
