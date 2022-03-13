@@ -34,7 +34,7 @@ class App extends Component {
         this.start = (page, mode)=>{
             axios({
                 method: 'POST',
-                url: "http://127.0.0.1/api/get",
+                url: "/api/get",
                 data: {page: page?page:this.state.page, type: mode?mode:this.state.mode}
             }).then((res)=>{
                 console.log(res.data)
