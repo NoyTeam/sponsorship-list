@@ -35,7 +35,7 @@ module.exports = {
             let time = req.body.time;
             if (username != "" && avatar != "" && money != "" && time != ""){
                 let h = await query("SELECT * FROM money WHERE `id`=?", [Number(type)]);
-                await query("INSERT INTO record (`username`, `avatar`, `money`, `type`, `hkd`, `time`) VALUES (?, ?, ?, ?)", [username, avatar, Number(money)*100, type, ((Number(money)*100)*h[0].tohkd)/100, time])
+                await query("INSERT INTO record (`username`, `avatar`, `money`, `type`, `hkd`, `time`) VALUES (?, ?, ?, ?, ?, ?)", [username, avatar, Number(money)*100, type, ((Number(money)*100)*h[0].tohkd)/100, time])
                 res.json({status: "ok"})
             }else{
                 res.json({status: "form_error"})
