@@ -14,6 +14,9 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import FormGroup from '@mui/material/FormGroup';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import moment from 'moment';
 import axios from "axios";
 import "./style.css";
@@ -26,7 +29,8 @@ class App extends Component {
             page: 1,
             rows: [],
             load: true,
-            err: false
+            err: false,
+            usehkd: false
         }
     }
 
@@ -53,7 +57,7 @@ class App extends Component {
     }
 
     render() {
-        let { mode, page, rows, load, err } = this.state;
+        let { mode, page, rows, load, err, usehkd } = this.state;
         
         return (
             <div
@@ -64,7 +68,7 @@ class App extends Component {
                 }}
             >
                 <h1>NoyAcg Sponsorship List</h1>
-                <ButtonGroup variant="contained" aria-label="outlined button group" sx={{marginBottom: 2.5, display:'flex', maxWidth: 400}}>
+                <ButtonGroup variant="contained" aria-label="outlined button group" sx={{marginBottom: 1.5, maxWidth: 400, display: 'flex'}}>
                     <Button className="bt" sx={{backgroundColor: mode===1?"#3e3e3e":"#717171"}} onClick={()=>{
                         this.setState({mode: 1});
                         this.start(false, 1);
@@ -74,6 +78,9 @@ class App extends Component {
                         this.start(false, 2);
                     }}>按金額排序</Button>
                 </ButtonGroup>
+                <FormGroup sx={{marginBottom: 2.5}}>
+                    <FormControlLabel control={<Switch value={usehkd} onChange={(_, e)=>this.setState({usehkd: e})} />} label="使用 HKD 作為單位" />
+                </FormGroup>
                 { rows.length > 0 &&
                     <div>
                         <List
@@ -89,7 +96,7 @@ class App extends Component {
                                         <ListItem
                                             alignItems="flex-start"
                                             secondaryAction={
-                                                <Typography>${item.money/100} HKD</Typography>
+                                                <Typography>{usehkd?`$${item.hkd/100} HKD`:item.money}</Typography>
                                             }
                                         >
                                             <ListItemAvatar>

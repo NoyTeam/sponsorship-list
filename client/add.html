@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add</title>
+</head>
+<body style="padding: 20px">
+    
+    <h1>Add</h1>
+    <ul>
+        <li>USD: 1</li>
+        <li>USDT: 2</li>
+        <li>CNY: 3</li>
+        <li>JPY: 4</li>
+        <li>NTD: 5</li>
+        <li>MOP: 6</li>
+        <li>HKD: 7</li>
+    </ul>
+    <form action="http://127.0.0.1/api/add" method="post">
+        <input type="text" name="token" value="token" style="display: none;">
+        Username: <input type="text" name="username"><br><br>
+        avatar: <input type="text" name="avatar"><br><br>
+        money: <input type="text" name="money"><br><br>
+        type: <input type="text" name="type"><br><br>
+        time: <input type="text" name="time"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>
