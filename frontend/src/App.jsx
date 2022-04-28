@@ -30,23 +30,25 @@ class App extends Component {
             rows: [],
             load: true,
             err: false,
-            usehkd: false
+            usehkd: false,
+            count: 0
         }
     }
 
-    componentDidMount(){
-        this.start = (page, mode)=>{
+    componentDidMount() {
+        this.start = (page, mode) => {
             axios({
                 method: 'POST',
                 url: "/api/get",
-                data: {page: page?page:this.state.page, type: mode?mode:this.state.mode}
-            }).then((res)=>{
+                data: { page: page ? page : this.state.page, type: mode ? mode : this.state.mode }
+            }).then((res) => {
                 console.log(res.data)
                 this.setState({
-                    rows: res.data,
+                    count: res.data.count,
+                    rows: res.data.data,
                     load: false
                 })
-            }).catch(err=>{
+            }).catch(err => {
                 this.setState({
                     load: false,
                     err: true
@@ -57,8 +59,8 @@ class App extends Component {
     }
 
     render() {
-        let { mode, page, rows, load, err, usehkd } = this.state;
-        
+        let { mode, page, rows, load, err, usehkd, count } = this.state;
+
         return (
             <div
                 style={{
@@ -68,20 +70,20 @@ class App extends Component {
                 }}
             >
                 <h1>NoyAcg Sponsorship List</h1>
-                <ButtonGroup variant="contained" aria-label="outlined button group" sx={{marginBottom: 1.5, maxWidth: 400, display: 'flex'}}>
-                    <Button className="bt" sx={{backgroundColor: mode===1?"#3e3e3e":"#717171"}} onClick={()=>{
-                        this.setState({mode: 1});
+                <ButtonGroup variant="contained" aria-label="outlined button group" sx={{ marginBottom: 1.5, maxWidth: 400, display: 'flex' }}>
+                    <Button className="bt" sx={{ backgroundColor: mode === 1 ? "#3e3e3e" : "#717171" }} onClick={() => {
+                        this.setState({ mode: 1 });
                         this.start(false, 1);
                     }}>按時間排序</Button>
-                    <Button className="bt" sx={{backgroundColor: mode===2?"#3e3e3e":"#717171"}} onClick={()=>{
-                        this.setState({mode: 2});
+                    <Button className="bt" sx={{ backgroundColor: mode === 2 ? "#3e3e3e" : "#717171" }} onClick={() => {
+                        this.setState({ mode: 2 });
                         this.start(false, 2);
                     }}>按金額排序</Button>
                 </ButtonGroup>
-                <FormGroup sx={{marginBottom: 2.5}}>
-                    <FormControlLabel control={<Switch value={usehkd} onChange={(_, e)=>this.setState({usehkd: e})} />} label="使用 HKD 作為單位" />
+                <FormGroup sx={{ marginBottom: 2.5 }}>
+                    <FormControlLabel control={<Switch value={usehkd} onChange={(_, e) => this.setState({ usehkd: e })} />} label="使用 HKD 作為單位" />
                 </FormGroup>
-                { rows.length > 0 &&
+                {rows.length > 0 &&
                     <div>
                         <List
                             sx={{
@@ -89,14 +91,14 @@ class App extends Component {
                                 bgcolor: "background.paper",
                             }}
                         >
-                            {rows.map((item, index)=>{
+                            {rows.map((item, index) => {
                                 return (
                                     <span key={index}>
-                                        { index !== 0 && <Divider variant="inset" component="li" /> }
+                                        {index !== 0 && <Divider variant="inset" component="li" />}
                                         <ListItem
                                             alignItems="flex-start"
                                             secondaryAction={
-                                                <Typography>{usehkd?`$${item.hkd/100} HKD`:item.money}</Typography>
+                                                <Typography>{usehkd ? `$${item.hkd / 100} HKD` : item.money}</Typography>
                                             }
                                         >
                                             <ListItemAvatar>
@@ -107,20 +109,20 @@ class App extends Component {
                                             </ListItemAvatar>
                                             <ListItemText
                                                 primary={item.username}
-                                                secondary={moment(new Date(item.time*1000)).format("DD/MM/YYYY")}
+                                                secondary={moment(new Date(item.time * 1000)).format("DD/MM/YYYY")}
                                             />
                                         </ListItem>
                                     </span>
                                 )
                             })}
                         </List>
-                        <Pagination sx={{margin: '20px 0'}} className="page" count={Math.ceil(rows.length/20)} page={page} onChange={(e, p)=>{
-                            this.setState({page: p});
+                        <Pagination sx={{ margin: '20px 0' }} className="page" count={Math.ceil(count / 20)} page={page} onChange={(e, p) => {
+                            this.setState({ page: p });
                             this.start(p, false);
                         }} />
                     </div>
                 }
-                { err &&  
+                {err &&
                     <Alert severity="error" variant="filled">
                         <AlertTitle>Error</AlertTitle>
                         載入發生問題，可能是伺服器故障或是網絡問題
