@@ -17,6 +17,12 @@ import AlertTitle from '@mui/material/AlertTitle';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import InputBase from '@mui/material/InputBase';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
+import Paper from '@mui/material/Paper';
+import Fade from '@mui/material/Fade';
 import moment from 'moment';
 import axios from "axios";
 import "./style.css";
@@ -31,16 +37,18 @@ class App extends Component {
             load: true,
             err: false,
             usehkd: false,
-            count: 0
+            count: 0,
+            showsearch: false,
+            showsearchclose: true
         }
     }
 
     componentDidMount() {
-        this.start = (page, mode) => {
+        this.start = (page, mode, search) => {
             axios({
                 method: 'POST',
                 url: "/api/get",
-                data: { page: page ? page : this.state.page, type: mode ? mode : this.state.mode }
+                data: { page: page ? page : this.state.page, type: mode ? mode : this.state.mode, search: search ? search : "" }
             }).then((res) => {
                 console.log(res.data)
                 this.setState({
@@ -59,7 +67,8 @@ class App extends Component {
     }
 
     render() {
-        let { mode, page, rows, load, err, usehkd, count } = this.state;
+        let { mode, page, rows, load, err, usehkd, count, showsearch, showsearchclose } = this.state;
+        let search_work = null;
 
         return (
             <div
@@ -80,10 +89,48 @@ class App extends Component {
                         this.start(false, 2);
                     }}>按金額排序</Button>
                 </ButtonGroup>
-                <FormGroup sx={{ marginBottom: 2.5 }}>
-                    <FormControlLabel control={<Switch value={usehkd} onChange={(_, e) => this.setState({ usehkd: e })} />} label="使用 HKD 作為單位" />
-                </FormGroup>
-                {rows.length > 0 &&
+                <div style={{ display: 'flex' }}>
+                    <FormGroup sx={{ marginBottom: 2.5, flex: 1, justifyContent: 'center', display: 'flex' }}>
+                        <FormControlLabel control={<Switch value={usehkd} onChange={(_, e) => this.setState({ usehkd: e })} />} label="使用 HKD" />
+                    </FormGroup>
+                    <Fade in={showsearch} style={{ flex: 1, marginBottom: '20px' }}>
+                        <Paper
+                            component="form"
+                            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
+                        >
+                            <InputBase
+                                sx={{ ml: 1, flex: 1 }}
+                                id="search"
+                                placeholder="Search Users"
+                                inputProps={{ 'aria-label': 'search users' }}
+                                onKeyUp={(e) => {
+                                    try { clearTimeout(search_work) } catch (e) { }
+                                    search_work = setTimeout(() => {
+                                        let value = document.getElementById('search').value;
+                                        if (value !== "") {
+                                            this.start(false, false, value);
+                                        }
+                                    }, 500)
+                                }}
+                            />
+                            <IconButton sx={{ p: '10px' }} aria-label="search" onClick={() => {
+                                this.setState({ showsearch: false });
+                                setTimeout(() => this.setState({ showsearchclose: true }), 150)
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Paper>
+                    </Fade>
+                    <Fade in={showsearchclose} sx={{ display: !showsearchclose ? "none" : "" }} onClick={() => {
+                        this.setState({ showsearch: true, showsearchclose: false });
+                    }}>
+                        <IconButton sx={{ p: '10px' }} style={{ marginBottom: '24px', marginTop: '4px' }} aria-label="close">
+                            <SearchIcon />
+                        </IconButton>
+                    </Fade>
+                </div>
+                {
+                    rows.length > 0 &&
                     <div>
                         <List
                             sx={{
@@ -102,10 +149,7 @@ class App extends Component {
                                             }
                                         >
                                             <ListItemAvatar>
-                                                <Avatar
-                                                    alt={item.username}
-                                                    src={item.avatar}
-                                                />
+                                                <Avatar alt={item.username} src={item.avatar} />
                                             </ListItemAvatar>
                                             <ListItemText
                                                 primary={item.username}
@@ -122,7 +166,8 @@ class App extends Component {
                         }} />
                     </div>
                 }
-                {err &&
+                {
+                    err &&
                     <Alert severity="error" variant="filled">
                         <AlertTitle>Error</AlertTitle>
                         載入發生問題，可能是伺服器故障或是網絡問題
@@ -134,7 +179,7 @@ class App extends Component {
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>
-            </div>
+            </div >
         );
     }
 }

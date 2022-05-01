@@ -5,6 +5,7 @@ module.exports = {
     get: async (req, res) => {
         let page = Number(req.body.page);
         let type = Number(req.body.type);
+        let search = req.body.search;
         if (isNaN(page) || isNaN(type)) {
             res.json({ status: "error" });
         }
@@ -15,8 +16,8 @@ module.exports = {
             default: typeinfo = "time"; break;
         }
         let pagenum = (page - 1) * 20;
-        let count = await query("SELECT count(id) as num FROM record");
-        let dbinfo = await query(`SELECT * FROM record ORDER BY ${typeinfo} DESC LIMIT ?,20`, [pagenum]);
+        let count = await query(`SELECT count(id) as num FROM record${search ? ` WHERE \`username\` like "%${search}%"` : ""}`);
+        let dbinfo = await query(`SELECT * FROM record${search ? ` WHERE \`username\` like "%${search}%"` : ""} ORDER BY ${typeinfo} DESC LIMIT ?,20`, [pagenum]);
         let money_type = await query(`SELECT * FROM money`);
         let money_table = {};
         for (let i in money_type) {
