@@ -109,6 +109,8 @@ class App extends Component {
                                         let value = document.getElementById('search').value;
                                         if (value !== "") {
                                             this.start(false, false, value);
+                                        } else {
+                                            this.start();
                                         }
                                     }, 500)
                                 }}
