@@ -163,9 +163,9 @@ class App extends Component {
                                             <ListItemText
                                                 primary={(
                                                     <span>
-                                                        <Typography sx={{display: 'inline-block'}}>{item.username}</Typography>
-                                                        {item.comment!=null&&
-                                                            <IconButton sx={{height: '40px', display: 'inline-block'}} aria-label="upload picture" component="span" onClick={()=>{
+                                                        <Typography sx={{ display: 'inline-block' }}>{item.username}</Typography>
+                                                        {item.comment != null &&
+                                                            <IconButton sx={{ height: '24px', padding: 0, display: 'inline-block', ml: 1 }} aria-label="upload picture" component="span" onClick={() => {
                                                                 this.setState({
                                                                     openDialog: true,
                                                                     dialogText: item.comment
@@ -198,14 +198,14 @@ class App extends Component {
                 }
                 <Dialog
                     open={openDialog}
-                    onClose={()=>this.setState({openDialog: false})}
+                    onClose={() => this.setState({ openDialog: false })}
                     aria-describedby="alert-dialog-description"
                 >
-                    <DialogContent sx={{minWidth: '300px'}}>
+                    <DialogContent sx={{ minWidth: '300px' }}>
                         <DialogContentText id="alert-dialog-description">{dialogText}</DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={()=>this.setState({openDialog: false})}>Close</Button>
+                        <Button onClick={() => this.setState({ openDialog: false })}>Close</Button>
                     </DialogActions>
                 </Dialog>
                 <Backdrop
