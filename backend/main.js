@@ -19,10 +19,6 @@ app.get('/api/status', multipartMiddleware, function (req, res) {
     res.json({"status": 200});
 });
 
-// app.get("/", (req, res)=>{
-//     res.redirect(302, '/static/')
-// })
-
 // API
 app.post("/api/get", multipartMiddleware, api.get);
 app.post("/api/add", multipartMiddleware, api.add);

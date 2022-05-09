@@ -24,6 +24,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import Paper from '@mui/material/Paper';
 import Fade from '@mui/material/Fade';
 import moment from 'moment';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import ChatIcon from '@mui/icons-material/Chat';
 import axios from "axios";
 import "./style.css";
 
@@ -39,7 +44,9 @@ class App extends Component {
             usehkd: false,
             count: 0,
             showsearch: false,
-            showsearchclose: true
+            showsearchclose: true,
+            openDialog: false,
+            dialogText: ''
         }
     }
 
@@ -67,7 +74,7 @@ class App extends Component {
     }
 
     render() {
-        let { mode, page, rows, load, err, usehkd, count, showsearch, showsearchclose } = this.state;
+        let { mode, page, rows, load, err, usehkd, count, showsearch, showsearchclose, openDialog, dialogText } = this.state;
         let search_work = null;
 
         return (
@@ -154,7 +161,21 @@ class App extends Component {
                                                 <Avatar alt={item.username} src={item.avatar} />
                                             </ListItemAvatar>
                                             <ListItemText
-                                                primary={item.username}
+                                                primary={(
+                                                    <span>
+                                                        <Typography sx={{display: 'inline-block'}}>{item.username}</Typography>
+                                                        {item.comment!=null&&
+                                                            <IconButton sx={{height: '40px', display: 'inline-block'}} aria-label="upload picture" component="span" onClick={()=>{
+                                                                this.setState({
+                                                                    openDialog: true,
+                                                                    dialogText: item.comment
+                                                                })
+                                                            }}>
+                                                                <ChatIcon />
+                                                            </IconButton>
+                                                        }
+                                                    </span>
+                                                )}
                                                 secondary={moment(new Date(item.time * 1000)).format("DD/MM/YYYY")}
                                             />
                                         </ListItem>
@@ -175,6 +196,18 @@ class App extends Component {
                         載入發生問題，可能是伺服器故障或是網絡問題
                     </Alert>
                 }
+                <Dialog
+                    open={openDialog}
+                    onClose={()=>this.setState({openDialog: false})}
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent sx={{minWidth: '300px'}}>
+                        <DialogContentText id="alert-dialog-description">{dialogText}</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={()=>this.setState({openDialog: false})}>Close</Button>
+                    </DialogActions>
+                </Dialog>
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                     open={load}
